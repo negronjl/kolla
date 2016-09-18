@@ -8,6 +8,18 @@
         tags: ceph,
         when: enable_ceph | bool }
 
+- hosts: etcd
+  roles:
+    - { role: etcd,
+        tags: etcd,
+        when: enable_etcd | bool }
+
+- hosts: etcd_proxy
+  roles:
+    - { role: etcd,
+        tags: etcd,
+        when: enable_etcd_proxy | bool }
+
 - hosts: elasticsearch
   roles:
     - { role: elasticsearch,

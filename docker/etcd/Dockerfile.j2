@@ -1,0 +1,39 @@
+FROM {{ namespace }}/{{ image_prefix }}base:{{ tag }}
+MAINTAINER {{ maintainer }}
+
+ENV VERSION v2.3.7
+ENV FILE etcd-$VERSION-linux-amd64
+
+{% if base_distro in ['centos', 'fedora', 'oraclelinux', 'rhel'] %}
+
+RUN yum -y install \
+    curl \
+    && yum clean all
+
+{% elif base_distro in ['ubuntu', 'debian'] %}
+
+RUN apt-get update \
+    && apt-get -y install --no-install-recommends \
+       curl \
+    && apt-get clean
+
+{% endif %}
+
+RUN curl --silent -L -o $FILE.tar.gz https://github.com/coreos/etcd/releases/download/$VERSION/$FILE.tar.gz  \
+    && tar -zxf $FILE.tar.gz  \
+    && rm $FILE.tar.gz  \
+    && mv $FILE/etcd /usr/local/bin  \
+    && mv $FILE/etcdctl /usr/local/bin  \
+    && rm -rf $FILE
+
+COPY etcd_sudoers /etc/sudoers.d/etcd_sudoers
+COPY extend_start.sh /usr/local/bin/kolla_extend_start
+RUN useradd --user-group etcd \
+    && chmod 755 /usr/local/bin/kolla_extend_start \
+    && chmod 750 /etc/sudoers.d \
+    && chmod 440 /etc/sudoers.d/etcd_sudoers \
+    && usermod -a -G kolla etcd
+
+{{ include_footer }}
+
+USER etcd

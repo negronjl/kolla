@@ -1,0 +1,11 @@
+{
+    "command": "etcd",
+    "config_files": [
+        {
+            "source": "{{ container_config_directory }}/etcd",
+            "dest": "/etc/etcd",
+            "owner": "etcd",
+            "perm": "0600"
+        }
+    ]
+}
