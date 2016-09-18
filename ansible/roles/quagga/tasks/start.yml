@@ -1,0 +1,15 @@
+---
+- name: Starting quagga container
+  kolla_docker:
+    action: "start_container"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ quagga_image_full }}"
+    name: "quagga"
+    privileged: True
+    volumes:
+      - "{{ node_config_directory }}/quagga/:{{ container_config_directory }}/:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/run/:/run/"
+      - "/run/netns/:/run/netns/:shared"
+      - "quagga:/var/lib/quagga"
+      - "kolla_logs:/var/log/kolla/"

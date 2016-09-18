@@ -1,0 +1,11 @@
+{
+    "command": "bash -er /usr/local/bin/quagga-init",
+    "config_files": [
+        {
+            "source": "{{ container_config_directory }}/zebra.conf",
+            "dest": "/etc/quagga/zebra.conf",
+            "owner": "root",
+            "perm": "0600"
+        }
+    ]
+}
