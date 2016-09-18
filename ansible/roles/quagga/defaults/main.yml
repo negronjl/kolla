@@ -1,0 +1,9 @@
+---
+project_name: "quagga"
+
+####################
+# Docker
+####################
+quagga_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{{ docker_namespace }}/{{ kolla_base_distro }}-{{ kolla_install_type }}-quagga"
+quagga_tag: "{{ openstack_release }}"
+quagga_image_full: "{{ quagga_image }}:{{ quagga_tag }}"
