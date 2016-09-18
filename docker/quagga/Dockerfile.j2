@@ -1,0 +1,21 @@
+FROM {{ namespace }}/{{ image_prefix }}openstack-base:{{ tag }}
+MAINTAINER {{ maintainer }}
+
+{% if base_distro in ['centos', 'fedora', 'oraclelinux', 'rhel'] %}
+
+RUN yum -y install \
+        quagga \
+    && yum clean all
+
+{% elif base_distro in ['ubuntu'] %}
+
+RUN apt-get -y install --no-install-recommends \
+        quagga \
+    && apt-get clean
+{% endif %}
+
+COPY quagga-init /usr/local/bin/
+
+{{ include_footer }}
+
+USER quagga
