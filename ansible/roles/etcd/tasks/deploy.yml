@@ -1,0 +1,8 @@
+---
+- include: config.yml
+
+- include: bootstrap.yml
+# This will restart the container we initially used to bootstrap the cluster to
+# make it match the other containers environment-wise. This also prevents a
+# change from showing up when rerunning the playbooks
+- include: start.yml

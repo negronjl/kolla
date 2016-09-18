@@ -1,0 +1,21 @@
+---
+- name: Starting etcd container
+  kolla_docker:
+    action: "start_container"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ etcd_image_full }}"
+    name: "etcd"
+    volumes:
+      - "{{ node_config_directory }}/etcd/:{{ container_config_directory }}/:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "etcd:/var/lib/etcd"
+      - "kolla_logs:/var/log/kolla/"
+
+- name: Waiting for etcd service to be ready
+  wait_for:
+    host: "{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}"
+    port: "{{ etcd_peer_port }}"
+    connect_timeout: 1
+    timeout: 60
+    state: "started"
+  when: inventory_hostname in groups['etcd']

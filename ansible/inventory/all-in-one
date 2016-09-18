@@ -21,6 +21,12 @@ control
 [elasticsearch:children]
 control
 
+[etcd:children]
+control
+
+[etcd_proxy:children]
+compute
+
 [haproxy:children]
 network
 
