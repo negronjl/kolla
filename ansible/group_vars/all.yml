@@ -200,7 +200,6 @@ enable_murano: "no"
 enable_swift: "no"
 enable_etcd: "no"
 enable_etcd_proxy: "no"
-enable_quagga: "no"
 
 ironic_keystone_user: "ironic"
 neutron_keystone_user: "neutron"

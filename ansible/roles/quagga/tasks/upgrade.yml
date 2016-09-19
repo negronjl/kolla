@@ -1,5 +1,0 @@
----
-- include: config.yml
-
-- include: do_upgrade.yml
-  serial: "30%"

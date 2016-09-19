@@ -222,9 +222,3 @@ mistral
 [mistral-engine:children]
 mistral
 
-# BGP/OSPF client
-[quagga:children]
-control
-compute
-storage
-network
