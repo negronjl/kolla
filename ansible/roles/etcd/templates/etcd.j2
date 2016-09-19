@@ -2,7 +2,7 @@ ETCD_NAME={{ ansible_hostname }}
 ETCD_DATA_DIR=/var/lib/etcd/{{ ansible_hostname }}
 ETCD_INITIAL_CLUSTER_STATE=new
 ETCD_LISTEN_PEER_URLS=http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:{{ etcd_peer_port }}
-ETCD_LISTEN_CLIENT_URLS=http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:{{ etcd_client_port }},http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:4001
+ETCD_LISTEN_CLIENT_URLS=http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:{{ etcd_client_port }},http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:4001,http://127.0.0.1:{{ etcd_client_port }},http://127.0.0.1:4001
 {% if (inventory_hostname in groups['etcd_proxy']) and (inventory_hostname not in groups['etcd']) %}
 ETCD_PROXY=on
 ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:{{ etcd_peer_port }},http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:7001
