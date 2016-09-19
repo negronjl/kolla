@@ -1,0 +1,31 @@
+FROM {{ namespace }}/{{ image_prefix }}base:{{ tag }}
+MAINTAINER {{ maintainer }}
+
+{% if base_distro in ['centos', 'fedora', 'oraclelinux', 'rhel'] %}
+
+RUN yum -y install \
+    bird \
+    && yum clean all
+
+{% elif base_distro in ['ubuntu'] %}
+
+RUN echo "deb http://ppa.launchpad.net/cz.nic-labs/bird/ubuntu $(lsb_release -sc)  main" > /etc/apt/sources.list.d/bird.list \
+    && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 52463488670E69A092007C24F2331238F9C59A45 \
+    && apt-get update \
+    && apt-get -y install --no-install-recommends bird \
+    && apt-get clean
+
+{% elif base_distro in ['debian'] %}
+
+RUN wget -O - http://bird.network.cz/debian/apt.key | apt-key add - \
+    && apt-get install --no-install-recommends lsb-release \
+    && echo "deb http://bird.network.cz/debian/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/bird.list \
+    && apt-get update \
+    && apt-get install --no-install-recommends bird
+
+{% endif %}
+
+CMD ["/usr/local/bin/dumb-init", "/bin/sleep", "infinity"]
+
+{{ include_footer }}
+
