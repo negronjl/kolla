@@ -1,0 +1,7 @@
+---
+- name: Creating bird volume
+  kolla_docker:
+    action: "create_volume"
+    common_options: "{{ docker_common_options }}"
+    name: "bird"
+  register: bird_volume

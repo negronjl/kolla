@@ -27,6 +27,12 @@ control
 [etcd_proxy:children]
 compute
 
+[bird:children]
+control
+netowrk
+compute
+storage
+
 [haproxy:children]
 network
 

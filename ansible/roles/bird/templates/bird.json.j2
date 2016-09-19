@@ -1,0 +1,11 @@
+{
+    "command": "bird -c /etc/bird/bird.conf -s /var/run/bird/bird.ctl -f",
+    "config_files": [
+        {
+            "source": "{{ container_config_directory }}/bird.conf",
+            "dest": "/etc/bird/bird.conf",
+            "owner": "bird",
+            "perm": "0600"
+        }
+    ]
+}

@@ -20,6 +20,12 @@
         tags: etcd,
         when: enable_etcd_proxy | bool }
 
+- hosts: bird
+  roles:
+    - { role: bird,
+        tags: bird,
+        when: enable_bird | bool }
+
 - hosts: elasticsearch
   roles:
     - { role: elasticsearch,

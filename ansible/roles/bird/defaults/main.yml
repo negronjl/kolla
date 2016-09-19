@@ -1,0 +1,9 @@
+---
+project_name: "bird"
+
+####################
+# Docker
+####################
+bird_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{{ docker_namespace }}/{{ kolla_base_distro }}-{{ kolla_install_type }}-bird"
+bird_tag: "{{ openstack_release }}"
+bird_image_full: "{{ bird_image }}:{{ bird_tag }}"

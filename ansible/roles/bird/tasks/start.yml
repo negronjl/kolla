@@ -1,0 +1,11 @@
+---
+- name: Starting bird container
+  kolla_docker:
+    action: "start_container"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ bird_image_full }}"
+    name: "bird"
+    volumes:
+      - "{{ node_config_directory }}/bird/:{{ container_config_directory }}/:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "kolla_logs:/var/log/kolla/"

@@ -1,0 +1,7 @@
+---
+- name: Pulling bird image
+  kolla_docker:
+    action: "pull_image"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ bird_image_full }}"
+  when: inventory_hostname in groups['bird']
