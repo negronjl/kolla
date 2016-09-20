@@ -1,0 +1,35 @@
+FROM {{ namespace }}/{{ image_prefix }}neutron-base:{{ tag }}
+MAINTAINER {{ maintainer }}
+
+{% if base_distro in ['ubuntu', 'debian'] %}
+
+RUN  echo "deb http://ppa.launchpad.net/project-calico/calico-1.4/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/calico.list \
+     && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 71e607a24ddae8581987b54167d7e35b3d40a6a7 \
+     && echo "Package: *\nPin: release o=LP-PPA-project-calico-*\nPin-Priority: 1001\n" > /etc/apt/preferences \
+     && apt-get update \
+     && apt-get -y dist-upgrade \
+     && apt-get -y install \
+        wget \
+        libnettle4 \
+        libhogweed2 \
+        python-requests \
+        dnsmasq-base \
+        dnsmasq-utils \
+        python-neutron \
+        python-gevent \
+        python-posix-spawn \
+        calico-dhcp-agent \
+     && cd /tmp \
+     && wget https://launchpad.net/~project-calico/+archive/ubuntu/calico-1.4/+files/dnsmasq_2.72-2calico1.0.0+1_all.deb \
+     && dpkg -i --force-all /tmp/dnsmasq_2.72-2calico1.0.0+1_all.deb
+
+{% endif %}
+
+ADD plugins-archive /
+RUN   if [ "$(ls /plugins)" ]; then \
+           pip --no-cache-dir install --upgrade -c requirements/upper-constraints.txt /plugins/*; \
+       fi
+
+{{ include_footer }}
+
+USER neutron

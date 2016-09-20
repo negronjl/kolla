@@ -1,18 +1,18 @@
 # ml2_conf.ini
 [ml2]
 {% if enable_ironic | bool %}
-tenant_network_types = vxlan, flat
-mechanism_drivers = openvswitch
+tenant_network_types = vxlan{% if enable_calico | bool %},local,flat{% endif %}
+mechanism_drivers = openvswitch{% if enable_calico | bool %},calico{% endif %}
 {% else %}
 # Changing type_drivers after bootstrap can lead to database inconsistencies
-type_drivers = flat,vlan,vxlan
-tenant_network_types = vxlan
+type_drivers = flat,local,vlan,vxlan
+tenant_network_types = vxlan{% if enable_calico | bool %},local,flat{% endif %}
 {% endif %}
 
 {% if neutron_plugin_agent == "openvswitch" %}
-mechanism_drivers = openvswitch,l2population
+mechanism_drivers = openvswitch,l2population{% if enable_calico | bool %},calico{% endif %}
 {% elif neutron_plugin_agent == "linuxbridge" %}
-mechanism_drivers = linuxbridge,l2population
+mechanism_drivers = linuxbridge,l2population{% if enable_calico | bool %},calico{% endif %}
 {% endif %}
 
 [ml2_type_vlan]

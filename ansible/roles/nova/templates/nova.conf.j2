@@ -108,7 +108,11 @@ catalog_info = volume:cinder:internalURL
 url = {{ internal_protocol }}://{{ kolla_internal_fqdn }}:{{ neutron_server_port }}
 auth_strategy = keystone
 metadata_proxy_shared_secret = {{ metadata_secret }}
+{% if enable_calico %}
+service_metadata_proxy = false
+{% else %}
 service_metadata_proxy = true
+{% endif %}
 
 auth_url = {{ admin_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_admin_port }}
 auth_type = password

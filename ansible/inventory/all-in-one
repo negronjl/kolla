@@ -60,6 +60,9 @@ control
 [neutron:children]
 network
 
+[calico-dhcp-agent:children]
+neutron
+
 [cinder:children]
 control
 

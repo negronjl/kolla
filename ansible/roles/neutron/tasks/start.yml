@@ -151,6 +151,28 @@
        or inventory_hostname in groups['neutron-metadata-agent'])
     - neutron_plugin_agent == "linuxbridge"
 
+- name: Starting calico-dhcp-agent container
+  kolla_docker:
+    action: "start_container"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ calico_dhcp_agent_image_full }}"
+    name: "calico_dhcp_agent"
+    privileged: True
+    volumes:
+      - "{{ node_config_directory }}/calico-dhcp-agent/:{{ container_config_directory }}/:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/run/:/run/"
+      - "/run/netns/:/run/netns/:shared"
+      - "neutron_metadata_socket:/var/lib/neutron/kolla/"
+      - "kolla_logs:/var/log/kolla/"
+  when:
+    - (inventory_hostname in groups['compute']
+       or (enable_manila | bool and inventory_hostname in groups['manila-share'])
+       or inventory_hostname in groups['neutron-dhcp-agent']
+       or inventory_hostname in groups['neutron-l3-agent']
+       or inventory_hostname in groups['neutron-metadata-agent'])
+    -  neutron_plugin_agent == "calico"
+
 - name: Starting neutron-dhcp-agent container
   kolla_docker:
     action: "start_container"

@@ -35,6 +35,21 @@
         )
       )
 
+- name: Ensuring the neutron_calico_agent container is up
+  kolla_docker:
+    name: calico_dhcp_agent
+    action: "get_container_state"
+  register: calico_dhcp_agent_container_states
+  failed_when: calico_dhcp_agent_container_states.Running == false
+  when:
+    - neutron_plugin_agent == "calico"
+    - (inventory_hostname in groups['compute']
+       or (enable_manila | bool and inventory_hostname in groups['manila-share'])
+       or inventory_hostname in groups['neutron-dhcp-agent']
+       or inventory_hostname in groups['neutron-l3-agent']
+       or inventory_hostname in groups['neutron-lbaas-agent']
+       or inventory_hostname in groups['neutron-metadata-agent'])
+
 - name: Ensuring the neutron_linuxbridge_agent container is up
   kolla_docker:
     name: neutron_linuxbridge_agent
@@ -135,6 +150,20 @@
         )
       )
 
+- name: Container config strategy for the neutron_calico dhcp_agent container
+  kolla_docker:
+    name: "calico_dhcp_agent"
+    action: "get_container_env"
+  register: calico_dhcp_agent_envs
+  when:
+    - neutron_plugin_agent == "calico"
+    - (inventory_hostname in groups['compute']
+       or (enable_manila | bool and inventory_hostname in groups['manila-share'])
+       or inventory_hostname in groups['neutron-dhcp-agent']
+       or inventory_hostname in groups['neutron-l3-agent']
+       or inventory_hostname in groups['neutron-lbaas-agent']
+       or inventory_hostname in groups['neutron-metadata-agent'])
+
 - name: Container config strategy for the neutron_linuxbridge_agent container
   kolla_docker:
     name: "neutron_linuxbridge_agent"
@@ -188,6 +217,22 @@
       )
     - config_strategy == "COPY_ONCE" or openvswitch_agent_envs['KOLLA_CONFIG_STRATEGY'] == 'COPY_ONCE'
     - openvswitch_agent_check_results['rc'] == 1
+
+- name: Remove the neutron_calico_dhcp_agent container
+  kolla_docker:
+    name: "calico_dhcp_agent"
+    action: "remove_container"
+  register: calico_dhcp_agent_remove_containers
+  when:
+    - neutron_plugin_agent == "calico"
+    - (inventory_hostname in groups['compute']
+       or inventory_hostname in groups['manila-share']
+       or inventory_hostname in groups['neutron-dhcp-agent']
+       or inventory_hostname in groups['neutron-l3-agent']
+       or inventory_hostname in groups['neutron-lbaas-agent']
+       or inventory_hostname in groups['neutron-metadata-agent'])
+    - config_strategy == "COPY_ONCE" or calico_dhcp_agent_envs['KOLLA_CONFIG_STRATEGY'] == 'COPY_ONCE'
+    - calico_dhcp_agent_check_results['rc'] == 1
 
 - name: Remove the neutron_linuxbridge_agent container
   kolla_docker:
@@ -249,6 +294,22 @@
       )
     - openvswitch_agent_envs['KOLLA_CONFIG_STRATEGY'] != 'COPY_ONCE'
     - openvswitch_agent_check_results['rc'] == 1
+
+- name: Restart the neutron_calico_dhcp_agent container
+  kolla_docker:
+    name: "calico_dhcp_agent"
+    action: "restart_container"
+  when:
+    - config_strategy == 'COPY_ALWAYS'
+    - neutron_plugin_agent == "calico"
+    - (inventory_hostname in groups['compute']
+       or (enable_manila | bool and inventory_hostname in groups['manila-share'])
+       or inventory_hostname in groups['neutron-dhcp-agent']
+       or inventory_hostname in groups['neutron-l3-agent']
+       or inventory_hostname in groups['neutron-lbaas-agent']
+       or inventory_hostname in groups['neutron-metadata-agent'])
+    - calico_dhcp_agent_envs['KOLLA_CONFIG_STRATEGY'] != 'COPY_ONCE'
+    - calico_dhcp_agent_check_results['rc'] == 1
 
 - name: Restart the neutron_linuxbridge_agent container
   kolla_docker:

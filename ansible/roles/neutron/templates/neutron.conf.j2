@@ -31,7 +31,13 @@ host = {{ ansible_hostname }}_{{ item }}
 {% endif %}
 
 allow_overlapping_ips = true
+
+{% if enable_calico %}
+core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
+{% else %}
 core_plugin = ml2
+{% endif %}
+
 service_plugins = router
 
 [nova]
@@ -78,3 +84,9 @@ memcached_servers = {% for host in groups['memcached'] %}{{ hostvars[host]['ansi
 
 [oslo_messaging_notifications]
 driver = noop
+
+{% if enable_calico %}
+[calico]
+etcd_host={{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}
+etcd_port=4001
+{% endif %}

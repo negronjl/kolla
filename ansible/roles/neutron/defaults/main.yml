@@ -16,6 +16,10 @@ neutron_dhcp_agent_image: "{{ docker_registry ~ '/' if docker_registry else '' }
 neutron_dhcp_agent_tag: "{{ openstack_release }}"
 neutron_dhcp_agent_image_full: "{{ neutron_dhcp_agent_image }}:{{ neutron_dhcp_agent_tag }}"
 
+calico_dhcp_agent_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{{ docker_namespace }}/{{ kolla_base_distro }}-{{ kolla_install_type }}-calico-dhcp-agent"
+calico_dhcp_agent_tag: "{{ openstack_release }}"
+calico_dhcp_agent_image_full: "{{ calico_dhcp_agent_image }}:{{ calico_dhcp_agent_tag }}"
+
 neutron_l3_agent_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{{ docker_namespace }}/{{ kolla_base_distro }}-{{ kolla_install_type }}-neutron-l3-agent"
 neutron_l3_agent_tag: "{{ openstack_release }}"
 neutron_l3_agent_image_full: "{{ neutron_l3_agent_image }}:{{ neutron_l3_agent_tag }}"

@@ -13,6 +13,19 @@
     image: "{{ neutron_l3_agent_image_full }}"
   when: inventory_hostname in groups['neutron-l3-agent']
 
+- name: Pulling calico-dhcp-agent image
+  kolla_docker:
+    action: "pull_image"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ calico_dhcp_agent_image_full }}"
+  when:
+    - (inventory_hostname in groups['compute']
+       or (enable_manila | bool and inventory_hostname in groups['manila-share'])
+       or inventory_hostname in groups['neutron-dhcp-agent']
+       or inventory_hostname in groups['neutron-l3-agent']
+       or inventory_hostname in groups['neutron-metadata-agent'])
+    - neutron_plugin_agent == "calico"
+
 - name: Pulling neutron-linuxbridge-agent image
   kolla_docker:
     action: "pull_image"
