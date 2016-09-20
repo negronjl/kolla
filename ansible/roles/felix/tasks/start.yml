@@ -1,0 +1,18 @@
+---
+- name: Starting felix container
+  kolla_docker:
+    action: "start_container"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ felix_image_full }}"
+    name: "felix"
+    privileged: True
+    volumes:
+      - "{{ node_config_directory }}/felix/:{{ container_config_directory }}/:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/run/:/run/"
+      - "/run/netns/:/run/netns/:shared"
+      - "felix:/var/lib/felix"
+      - "kolla_logs:/var/log/kolla/"
+  when:
+    - inventory_hostname in groups['compute']
+    - neutron_plugin_agent == "calico"
