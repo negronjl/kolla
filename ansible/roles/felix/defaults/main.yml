@@ -1,0 +1,9 @@
+---
+project_name: "felix"
+
+####################
+# Docker
+####################
+felix_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{{ docker_namespace }}/{{ kolla_base_distro }}-{{ kolla_install_type }}-felix"
+felix_tag: "{{ openstack_release }}"
+felix_image_full: "{{ felix_image }}:{{ felix_tag }}"

@@ -1,0 +1,7 @@
+[global]
+EtcdAddr = {{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:4001
+DefaultEndpointToHostAction = ACCEPT
+MetadataAddr={{ kolla_internal_vip_address }}
+MetadataPort={{ nova_metadata_port }}
+LogFilePath=/var/log/kolla/felix/felix.log
+EtcdDriverLogFilePath=/var/log/kolla/felix/felix-etcd.log

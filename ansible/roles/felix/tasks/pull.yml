@@ -1,0 +1,9 @@
+---
+- name: Pulling felix image
+  kolla_docker:
+    action: "pull_image"
+    common_options: "{{ docker_common_options }}"
+    image: "{{ felix_image_full }}"
+  when:
+    - inventory_hostname in groups['compute']
+    - neutron_plugin_agent == "calico"

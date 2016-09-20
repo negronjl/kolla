@@ -26,6 +26,12 @@
         tags: bird,
         when: enable_bird | bool }
 
+- hosts: felix
+  roles:
+    - { role: felix,
+        tags: felix,
+        when: enable_calico | bool }
+
 - hosts: elasticsearch
   roles:
     - { role: elasticsearch,

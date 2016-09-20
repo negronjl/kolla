@@ -45,6 +45,9 @@ netowrk
 compute
 storage
 
+[felix:children]
+compute
+
 [haproxy:children]
 network
 
