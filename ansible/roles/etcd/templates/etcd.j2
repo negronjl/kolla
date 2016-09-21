@@ -11,4 +11,4 @@ ETCD_ADVERTISE_CLIENT_URLS=http://{{ hostvars[inventory_hostname]['ansible_' + a
 ETCD_INITIAL_ADVERTISE_PEER_URLS=http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:{{ etcd_peer_port }}
 ETCD_ADVERTISE_CLIENT_URLS=http://{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}:{{ etcd_client_port }}
 {% endif %}
-ETCD_INITIAL_CLUSTER={% if (groups['etcd'] | length) > 1 %}{% for host in groups['etcd'] %}{{ hostvars[host]['ansible_hostname'] }}=http://{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}:{{ etcd_peer_port }}{% if not loop.last %},{% endif %}{% endfor %}{% endif %}
+ETCD_INITIAL_CLUSTER={% if (groups['etcd'] | length) > 0 %}{% for host in groups['etcd'] %}{{ hostvars[host]['ansible_hostname'] }}=http://{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}:{{ etcd_peer_port }}{% if not loop.last %},{% endif %}{% endfor %}{% endif %}
