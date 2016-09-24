@@ -18,17 +18,31 @@ RUN  echo "deb http://ppa.launchpad.net/project-calico/calico-1.4/ubuntu $(lsb_r
         python-neutron \
         python-gevent \
         python-posix-spawn \
-        calico-dhcp-agent \
      && cd /tmp \
      && wget https://launchpad.net/~project-calico/+archive/ubuntu/calico-1.4/+files/dnsmasq_2.72-2calico1.0.0+1_all.deb \
-     && dpkg -i --force-all /tmp/dnsmasq_2.72-2calico1.0.0+1_all.deb
+     && dpkg -i --force-all /tmp/dnsmasq_2.72-2calico1.0.0+1_all.deb \
+     && rm -f /tmp/dnsmasq_2.72-2calico1.0.0+1_all.deb
 
-{% endif %}
+{% if install_type == 'binary' %}
+
+RUN  apt-get -y install calico-dhcp-agent
+
+{% elif install_type == 'source' %}
 
 ADD plugins-archive /
 RUN   if [ "$(ls /plugins)" ]; then \
            pip --no-cache-dir install --upgrade -c requirements/upper-constraints.txt /plugins/*; \
        fi
+
+{% endif %}
+
+{% endif %}
+
+
+RUN mkdir -p /var/log/calico \
+    && chown neutron /var/log/calico \
+    && mkdir -p /var/log/neutron \
+    && chown neutron /var/log/neutron
 
 {{ include_footer }}
 

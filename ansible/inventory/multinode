@@ -35,6 +35,7 @@ control
 
 [etcd:children]
 control
+network
 
 [etcd_proxy:children]
 compute

@@ -7,6 +7,8 @@ MAINTAINER {{ maintainer }}
 
 {% elif base_distro in ['ubuntu'] %}
 
+{% if install_type == 'binary' %}
+
 RUN echo "deb http://ppa.launchpad.net/project-calico/calico-1.4/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/calico.list \
     && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 71e607a24ddae8581987b54167d7e35b3d40a6a7 \
     && apt-get update  \
@@ -14,6 +16,32 @@ RUN echo "deb http://ppa.launchpad.net/project-calico/calico-1.4/ubuntu $(lsb_re
        calico-felix \
        python-setuptools \
     && apt-get clean
+
+{% elif install_type == 'source' %}
+
+ADD plugins-archive /
+RUN apt-get install -y --no-install-recommends \
+    python-dev \
+    gcc \
+    libffi-dev \
+    libyajl-dev \
+    ipset \
+    iptables \
+    uuid-runtime \
+    conntrack \
+    iputils-arping \
+    && apt-get clean
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+    && python get-pip.py \
+    && rm get-pip.py
+
+RUN find /plugins
+RUN   if [ "$(ls /plugins)" ]; then \
+           pip --no-cache-dir install -c /plugins/felix-plugin-calico-archive-master/felix_requirements.txt /plugins/*; \
+       fi
+
+{% endif %}
 
 {% endif %}
 

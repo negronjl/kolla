@@ -33,12 +33,12 @@ host = {{ ansible_hostname }}_{{ item }}
 allow_overlapping_ips = true
 
 {% if enable_calico %}
-core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
+core_plugin = calico
 {% else %}
 core_plugin = ml2
+service_plugins = router
 {% endif %}
 
-service_plugins = router
 
 [nova]
 auth_url = {{ internal_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_admin_port }}

@@ -1,5 +1,5 @@
 {
-    "command": "calico-dhcp-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/dhcp_agent.ini",
+    "command": "calico-dhcp-agent --log-dir /var/log/kolla/neutron --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/dhcp_agent.ini",
     "config_files": [
         {
             "source": "{{ container_config_directory }}/neutron.conf",
