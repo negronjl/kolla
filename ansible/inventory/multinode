@@ -42,7 +42,7 @@ compute
 
 [bird:children]
 control
-netowrk
+network
 compute
 storage
 
