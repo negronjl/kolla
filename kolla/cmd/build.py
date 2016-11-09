@@ -132,6 +132,7 @@ class WorkerThread(threading.Thread):
         self.nocache = not conf.cache or conf.no_cache
         self.forcerm = not conf.keep
         self.dc = docker_client()
+        self.ssl_verify = conf.ssl_verify
         super(WorkerThread, self).__init__()
 
     def end_task(self, image):
@@ -170,7 +171,7 @@ class WorkerThread(threading.Thread):
             LOG.debug("%s:Getting archive from %s", image['name'],
                       source['source'])
             try:
-                r = requests.get(source['source'], timeout=self.conf.timeout)
+                r = requests.get(source['source'], timeout=self.conf.timeout, verify=self.ssl_verify)
             except requests_exc.Timeout:
                 LOG.exception('Request timed out while getting archive'
                               ' from %s', source['source'])
