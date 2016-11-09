@@ -133,6 +133,8 @@ _CLI_OPTS = [
                 help=("Don't build images. Generate Dockerfile only")),
     cfg.IntOpt('timeout', default=120,
                help='Time in seconds after which any operation times out'),
+    cfg.BoolOpt('ssl_verify', default=True,
+               help='Verify SSL Certificates.'),
 ]
 
 _BASE_OPTS = [
