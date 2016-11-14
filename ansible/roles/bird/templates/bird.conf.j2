@@ -42,13 +42,14 @@ protocol direct {
 }
 
 {% if (groups['bird'] | length) > 1 %}
-{% for host in groups['bird'] %}
-{% if hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] != hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] %}
+   {% if bgp_full_mesh | bool %}
+      {% for host in groups['bird'] %}
+         {% if hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] != hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] %}
 # Peer with {{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}
 protocol bgp '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}' {
   description "Connection to {{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}";
   local as {{ bgp_as_number }};
-  neighbor {{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }} as {{ bgp_as_number }};
+  neighbor {{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }} as {{ bgp_peer_as }};
   multihop;
   import all;
   graceful restart;
@@ -56,8 +57,31 @@ protocol bgp '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['i
   next hop self;    # Disable next hop processing and always advertise our
                     # local address as nexthop
   source address {{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }};  # The local address we use for the TCP connection
+  {% if enable_bgp_password | bool %}
+  password {{ bgp_password }}
+  {% endif %}
 }
-{% endif %}
-{% endfor %}
+         {% endif %}
+      {% endfor %}
+   {% else %}
+      {% for rr_ip in bgp_rr_list %}
+# Peer with {{ rr_ip }}
+protocol bgp '{{ rr_ip }}' {
+  description "Connection to {{ rr_ip }}";
+  local as {{ bgp_as_number }};
+  neighbor {{ rr_ip }} as {{ bgp_peer_as }};
+  multihop;
+  import all;
+  graceful restart;
+  export filter export_bgp;
+  next hop self;    # Disable next hop processing and always advertise our
+                    # local address as nexthop
+  source address {{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }};  # The local address we use for the TCP connection
+  {% if enable_bgp_password | bool %}
+  password {{ bgp_password }}
+  {% endif %}
+}
+      {% endfor %}
+   {% endif %}
 {% endif %}
 
