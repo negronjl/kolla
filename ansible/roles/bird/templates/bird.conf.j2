@@ -48,7 +48,7 @@ protocol direct {
 # Peer with {{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}
 protocol bgp '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}' {
   description "Connection to {{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}";
-  local as {{ bgp_as_number }};
+  local as {{ bgp_peer_as }};
   neighbor {{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }} as {{ bgp_peer_as }};
   multihop;
   import all;
