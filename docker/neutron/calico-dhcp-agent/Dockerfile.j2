@@ -20,7 +20,9 @@ RUN  echo "deb http://ppa.launchpad.net/project-calico/calico-1.4/ubuntu $(lsb_r
         python-posix-spawn \
      && cd /tmp \
      && wget https://launchpad.net/~project-calico/+archive/ubuntu/calico-1.4/+files/dnsmasq_2.72-2calico1.0.0+1_all.deb \
+     && wget http://launchpadlibrarian.net/173841617/init-system-helpers_1.18_all.deb \
      && dpkg -i --force-all /tmp/dnsmasq_2.72-2calico1.0.0+1_all.deb \
+     && dpkg -i --force-all /tmp/init-system-helpers_1.18_all.deb \
      && rm -f /tmp/dnsmasq_2.72-2calico1.0.0+1_all.deb
 
 {% if install_type == 'binary' %}
