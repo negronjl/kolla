@@ -58,7 +58,7 @@ protocol bgp '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['i
                     # local address as nexthop
   source address {{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }};  # The local address we use for the TCP connection
   {% if enable_bgp_password | bool %}
-  password {{ bgp_password }}
+  password "{{ bgp_password }}";
   {% endif %}
 }
          {% endif %}
@@ -78,7 +78,7 @@ protocol bgp '{{ rr_ip }}' {
                     # local address as nexthop
   source address {{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }};  # The local address we use for the TCP connection
   {% if enable_bgp_password | bool %}
-  password {{ bgp_password }}
+  password "{{ bgp_password }}";
   {% endif %}
 }
       {% endfor %}
